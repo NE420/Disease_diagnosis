@@ -1,0 +1,7 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('app-users/<int:pk>', views.UserInfoView.as_view()),
+    path('app-users', views.AllUserInfoView.as_view()),
+]
