@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'djoser',
     #'django_filters',
-    'Disease_Diagnosis',
+    'Disease_Diagnosis.apps.DiseaseDiagnosisConfig',
 ]
 
 MIDDLEWARE = [
