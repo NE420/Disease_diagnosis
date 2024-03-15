@@ -13,7 +13,14 @@ class UserInfo(models.Model):
     weight = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     height = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     
-#class UserHistory(models.Model):
+class HistoryRecord(models.Model):
+    chat = models.CharField(max_length=950)
+    feedback =  models.CharField(max_length=350)
 
+class UserHistory(models.Model):
+    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    records = models.ForeignKey(HistoryRecord, on_delete= models.CASCADE)
+    
+    
 #class DocSpecialty(models.Model):
     
