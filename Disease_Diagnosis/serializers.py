@@ -59,4 +59,9 @@ class ALLUserInfoSerializer(serializers.ModelSerializer):
         else:
             cat = "Obese"
         return cat
+             
+class HistoryRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.HistoryRecord
+        fields = ['id','user','chat', 'feedback']
         
