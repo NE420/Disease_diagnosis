@@ -24,7 +24,7 @@ class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
 
 class AllUserInfoView(generics.ListCreateAPIView):
     queryset = models.UserInfo.objects.all()
-    serializer_class = serializers.ALLUserInfoSerializer
+    serializer_class = serializers.UserInfoSerializer
     # search_fields = ['id']
     ordering_fields = ['age', 'weight', 'height']
 
