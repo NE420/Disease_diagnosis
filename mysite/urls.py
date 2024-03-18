@@ -7,6 +7,6 @@ urlpatterns = [
     path('DD/',include('Disease_Diagnosis.urls')),
     path('auth/',include('djoser.urls')),
     path('auth/',include('djoser.urls.authtoken')),
-    path('Token/login', views.obtain_authToken),
+    path('Token/login', views.obtain_auth_token),
     # path('token/logout', views.obtain_auth_token),
 ]

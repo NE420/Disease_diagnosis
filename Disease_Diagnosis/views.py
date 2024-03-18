@@ -21,6 +21,10 @@ class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
     #         permission_classes = [IsAuthenticated]
 
     #     return [permission() for permission in permission_classes]
+    def get_object(self):
+        # Retrieve the profile of the user specified by user_id
+        user_id = self.kwargs.get('user_id')
+        return models.UserInfo.objects.get(user_id=user_id)
 
 class AllUserInfoView(generics.ListCreateAPIView):
     queryset = models.UserInfo.objects.all()
@@ -42,3 +46,9 @@ class HistoryRecordView(generics.ListCreateAPIView):
 # class singleHistoryRecordView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = models.HistoryRecord.objects.all()
 #     serializer_class = serializers.HistoryRecordSerializer
+
+class CurrentUserIdView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({'user_id': request.user.id})
