@@ -43,9 +43,9 @@ class HistoryRecordView(generics.ListCreateAPIView):
     queryset = models.HistoryRecord.objects.all()
     serializer_class = serializers.HistoryRecordSerializer
     
-# class singleHistoryRecordView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = models.HistoryRecord.objects.all()
-#     serializer_class = serializers.HistoryRecordSerializer
+class SingleHistoryRecordView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.HistoryRecord.objects.all()
+    serializer_class = serializers.HistoryRecordSerializer
 
 class CurrentUserIdView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]

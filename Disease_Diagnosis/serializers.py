@@ -33,7 +33,9 @@ class UserInfoSerializer(serializers.ModelSerializer):
         return cat
         
 class HistoryRecordSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user', read_only=True)
+    chat_log = serializers.CharField(source='chat', read_only=True)
     class Meta:
         model = models.HistoryRecord
-        fields = ['id','user','chat', 'feedback']
+        fields = ['id','user_name','chat_log', 'feedback']
         
