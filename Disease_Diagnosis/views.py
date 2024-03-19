@@ -8,7 +8,7 @@ from rest_framework import status
 from . import models
 from . import serializers
 
-# from django.shortcuts import  get_object_or_404
+from django.shortcuts import  get_object_or_404
 from django.contrib.auth.models import Group, User
 
 class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
@@ -21,10 +21,10 @@ class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
     #         permission_classes = [IsAuthenticated]
 
     #     return [permission() for permission in permission_classes]
+    
     def get_object(self):
-        # Retrieve the profile of the user specified by user_id
-        user_id = self.kwargs.get('user_id')
-        return models.UserInfo.objects.get(user_id=user_id)
+        user_id = self.kwargs.get('user_id')    # Retrieve the profile of the user specified by user_id
+        return get_object_or_404(models.UserInfo, user_id=user_id)
 
 class AllUserInfoView(generics.ListCreateAPIView):
     queryset = models.UserInfo.objects.all()
