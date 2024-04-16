@@ -15,7 +15,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(),
         default=serializers.CurrentUserDefault()
     )
-    image = serializers.FileField(required=False)
     class Meta:
         model = models.UserInfo   
         fields = ['user', 'age', 'gender', 'weight', 'height', 'BMI','image']
