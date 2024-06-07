@@ -11,7 +11,7 @@ from . import serializers
 from django.shortcuts import  get_object_or_404
 from django.contrib.auth.models import Group, User
 
-class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
+class UserInfoView(generics.RetrieveUpdateDestroyAPIView): # single user view accessed by user and admin
     queryset = models.UserInfo.objects.all()
     serializer_class = serializers.UserInfoSerializer
 
@@ -26,7 +26,7 @@ class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
         user_id = self.kwargs.get('user_id')    # Retrieve the profile of the user specified by user_id
         return get_object_or_404(models.UserInfo, user_id=user_id)
 
-class AllUserInfoView(generics.ListCreateAPIView):
+class AllUserInfoView(generics.ListCreateAPIView): # all users view accessed by admin
     queryset = models.UserInfo.objects.all()
     serializer_class = serializers.UserInfoSerializer
     # search_fields = ['id']
