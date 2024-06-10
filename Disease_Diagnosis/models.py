@@ -1,6 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
-# Create your models here.
+import os
+
+import pyrebase
+
+config = {
+
+  "apiKey": "AIzaSyCIApd-0IFqzx0LUUp9cTRmdDPbT8mQECk",
+  "authDomain": "diseasediagnosis-c0f74.firebaseapp.com",
+  "projectId": "diseasediagnosis-c0f74",
+  "databaseURL": "https://dummy-url.firebaseio.com",
+  "storageBucket": "diseasediagnosis-c0f74.appspot.com",
+  "messagingSenderId": "971295866182",
+  "appId": "1:971295866182:web:c0cd0d8e2d55493ee1f947",
+  "measurementId": "G-48JYS9EQGB"
+}
+
+firebase = pyrebase.initialize_app(config)
+storage = firebase.storage()
 
 def upload_path(instance, filename): # returns image path
     return '/'.join(['images', str(instance.user.username), filename])
@@ -16,6 +33,19 @@ class UserInfo(models.Model): # accessed by user and admin
     weight = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     height = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     image = models.ImageField(upload_to=upload_path, null=True, blank=True)
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        filename = os.path.basename(self.image.name)
+        storagePath= '/'.join(['images', str(self.user.username), filename])
+        # print(storagePath)
+        storage.child(storagePath).put(self.image.path)
+
+        # if os.path.isfile(localpath):
+        #os.remove(localpath)
+    
+
     
 class HistoryRecord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
