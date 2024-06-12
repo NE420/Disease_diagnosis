@@ -32,15 +32,16 @@ class UserInfo(models.Model): # accessed by user and admin
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE)
     weight = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     height = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
-    image = models.ImageField(upload_to=upload_path, null=True, blank=True)
+    image = models.ImageField(upload_to=upload_path, blank=True)
 
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        filename = os.path.basename(self.image.name)
-        storagePath= '/'.join(['images', str(self.user.username), filename])
-        # print(storagePath)
-        storage.child(storagePath).put(self.image.path)
+        if self.image:
+            filename = os.path.basename(self.image.name)
+            storagePath= '/'.join(['images', str(self.user.username), filename])
+            # print(storagePath)
+            storage.child(storagePath).put(self.image.path)
 
         # if os.path.isfile(localpath):
         #os.remove(localpath)
