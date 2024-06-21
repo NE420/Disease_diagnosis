@@ -10,3 +10,4 @@ urlpatterns = [
     path('Token/login', views.obtain_auth_token),
     # path('token/logout', views.obtain_auth_token),
 ]
+

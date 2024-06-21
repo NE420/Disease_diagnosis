@@ -32,7 +32,7 @@ class UserInfo(models.Model): # accessed by user and admin
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE)
     weight = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
     height = models.DecimalField(db_index=True, max_digits=5, decimal_places=2)
-    image = models.ImageField(upload_to=upload_path, blank=True)
+    image = models.ImageField(upload_to=upload_path, blank=True,null= True)
 
 
     def save(self, *args, **kwargs):

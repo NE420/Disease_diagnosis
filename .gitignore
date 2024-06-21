@@ -1,1 +1,28 @@
 db.sqlite3
+.env
+.venv/
+
+
+# Media files
+/media/
+
+
+# Database
+*.sqlite3
+*.db
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+
+# Logs and temporary files
+logs/
+tmp/
+temp/
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
