@@ -33,6 +33,10 @@ class AllUserInfoView(generics.ListCreateAPIView): # all users view accessed by 
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+    
+    def perform_create(self, serializer):
+        user=self.request.user
+        serializer.save(user=user)
 
 class HistoryRecordView(generics.ListCreateAPIView):
     queryset = models.HistoryRecord.objects.all()

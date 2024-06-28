@@ -11,10 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserInfoSerializer(serializers.ModelSerializer):
     BMI = serializers.SerializerMethodField(method_name='CalcBMI', read_only=True)
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(),
-        default=serializers.CurrentUserDefault()
-    )
+    user = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = models.UserInfo   
         fields = ['user', 'age', 'gender', 'weight', 'height', 'BMI','image']
