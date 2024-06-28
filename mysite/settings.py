@@ -106,7 +106,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    "USER_ID_FIELD":"username"
+    # "USER_ID_FIELD":"username"
 }
 
 MEDIA_URL = '/media/'
