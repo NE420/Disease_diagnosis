@@ -41,9 +41,3 @@ class HistoryRecordView(generics.ListCreateAPIView):
 class SingleHistoryRecordView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.HistoryRecord.objects.all()
     serializer_class = serializers.HistoryRecordSerializer
-
-class CurrentUserIdView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated] # could be changed to IsAdminUser to make it safer 
-
-    def get(self, request, *args, **kwargs):
-        return Response({'user_id': request.user.id})
