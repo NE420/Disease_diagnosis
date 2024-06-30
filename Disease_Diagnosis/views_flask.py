@@ -2,8 +2,13 @@ import json
 import os
 import requests
 from django.http import HttpResponse,JsonResponse
+from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from rest_framework import generics
+
+from Disease_Diagnosis import models
 
 # Load environment variables from .env file
 load_dotenv()
@@ -62,10 +67,35 @@ def get_chat_response(request):
 
 
 #View to classify images by sending image to flask model
+
 @csrf_exempt  # Use csrf_exempt to disable CSRF token requirement (for development/testing)
 def process_image(request):
+
     #Accepts only Post Methods
     if request.method == 'POST':
+
+
+        # Get the User object using the username
+        username = request.user.username
+
+        # Get the User object using the username
+        user_id = get_object_or_404(User, username=username).id
+
+        user_info =  get_object_or_404(models.UserInfo, user_id=user_id)
+
+        gender = user_info.gender
+        age = user_info.age
+
+        data = request.form
+
+        img_pos = data.get('position')
+
+        # validate image position in the body
+        if img_pos is None:
+            return JsonResponse({'error': 'Json value "position" is required and cannot be empty.'}, status=400)
+        if img_pos not in ['head/neck', 'lower extremity', 'oral/genital', 'palms/soles', 'torso', 'upper extremity']:
+            return JsonResponse({'error': 'Json value "position" is not a valid poition.'}, status=400)
+
         # Check if request contains a file
         if 'file' not in request.FILES:
             return JsonResponse({'error': 'No file part in the request'}, status=400)
@@ -79,11 +109,18 @@ def process_image(request):
         # Check if file type is allowed
         if file and allowed_file(file.name):
             try:
+
                 # Prepare data to send to Flask server as a form files
                 files = {
                     'file': file
                 }
+                #Meta data required by image classifier model
+                req_data = {
 
+                    'position':img_pos,
+                    'gender':gender,
+                    'age':age
+                }
                 # URL on Flask server for image processing
                 image_url = MLModel_server_URL + "/api/process_image"
 
@@ -94,7 +131,7 @@ def process_image(request):
 
                 try:
                     # Send POST request to Flask server
-                    response = requests.post(image_url, files=files, headers=headers)
+                    response = requests.post(image_url,data=req_data, files=files, headers=headers)
 
                     # Handle response from Flask server
                     if response.status_code == 200:
