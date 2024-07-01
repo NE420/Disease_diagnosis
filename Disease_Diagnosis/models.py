@@ -45,6 +45,9 @@ class UserInfo(models.Model): # accessed by user and admin
 
         # if os.path.isfile(localpath):
         #os.remove(localpath)
+        
+    def __str__(self):
+        return self.user.username
     
 
     
