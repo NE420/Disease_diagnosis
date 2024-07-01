@@ -39,7 +39,7 @@ class UserInfoCreateView(generics.CreateAPIView):#Create User Info
     def perform_create(self, serializer):
         user = self.request.user #Get The Username from the body
         serializer.save(user=user)
-class AllUserInfoView(generics.ListCreateAPIView): # all users view accessed by admin and users to create user info
+class AllUserInfoView(generics.ListAPIView): # all users view accessed by admin and users to create user info
     queryset = models.UserInfo.objects.all()
     serializer_class = serializers.UserInfoSerializer
     # search_fields = ['id']
