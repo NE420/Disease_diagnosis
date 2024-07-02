@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from decimal import Decimal
 from . import models
 
+from djoser.serializers import ActivationSerializer
+from django.contrib.auth import get_user_model
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -37,3 +40,11 @@ class HistoryRecordSerializer(serializers.ModelSerializer):
         model = models.HistoryRecord
         fields = ['id','user_name','chat_log', 'feedback']
         
+
+class CustomActivationSerializer(ActivationSerializer):
+    def activate(self, *args, **kwargs):
+        user = super().activate(*args, **kwargs)
+        if user:
+            user.is_active = True
+            user.save()
+        return user

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken import views
+from Disease_Diagnosis.views import UserActivationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -9,5 +10,6 @@ urlpatterns = [
     path('auth/',include('djoser.urls.authtoken')),
     path('Token/login', views.obtain_auth_token),
     path('token/logout', views.obtain_auth_token),
+    path('auth/users/activate/<str:uid>/<str:token>/', UserActivationView.as_view(), name='activate-user'),
 ]
 

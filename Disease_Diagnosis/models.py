@@ -54,5 +54,15 @@ class HistoryRecord(models.Model):
     feedback =  models.CharField(max_length=350, blank=True)
     
     
-#class DocSpecialty(models.Model):
+class DocInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    specialization = models.CharField(max_length=100)
+    years_of_experience = models.PositiveIntegerField()
+    contact_number = models.CharField(max_length=15)
+    education = models.TextField()
+    consultation_fees = models.DecimalField(max_digits=10, decimal_places=2)
+    availability = models.TextField()
+    
+    def __str__(self):
+        return self.user.username
     
