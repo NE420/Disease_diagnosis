@@ -53,9 +53,7 @@ class UserInfo(models.Model): # accessed by user and admin
     
 class HistoryRecord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chat = models.CharField(max_length=950)
-    feedback =  models.CharField(max_length=350, blank=True)
-    
-    
+    chat = models.CharField(max_length=2000)
+     
 #class DocSpecialty(models.Model):
     
