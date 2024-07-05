@@ -6,9 +6,11 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import status
 from django.contrib.auth.models import User
-
+from .serializers import ChatSessionSerializer, InteractionSerializer, ChatSessionInteractSerializer
+from .models import ChatSession, Interaction
 from . import models
 from . import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from django.shortcuts import  get_object_or_404
 #from django.contrib.auth.models import Group, User
@@ -56,16 +58,6 @@ class AllUserInfoView(generics.ListAPIView): # all users view accessed by admin 
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
-    
-
-
-class HistoryRecordView(generics.ListCreateAPIView):
-    queryset = models.HistoryRecord.objects.all()
-    serializer_class = serializers.HistoryRecordSerializer
-    
-class SingleHistoryRecordView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = models.HistoryRecord.objects.all()
-    serializer_class = serializers.HistoryRecordSerializer
 
 class UserActivationView(APIView):
     permission_classes = [AllowAny]
@@ -84,3 +76,40 @@ class UserActivationView(APIView):
             content = {'error': str(e)}
         
         return Response(content)
+
+
+#History Views
+#With Get Request Retrieves user previous Sessions and with post create a new session
+class ChatSessionListCreateView(generics.ListCreateAPIView):
+    serializer_class = ChatSessionSerializer
+    permission_classes = [IsAuthenticated,IsOwner]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ChatSession.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        print(user)
+        serializer.save(user=user)
+#Uses retrieve api view to return session details for a specific session id for a specific user
+class ChatSessionDetailView(generics.RetrieveAPIView):
+    serializer_class = ChatSessionInteractSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ChatSession.objects.filter(user=self.request.user)
+#Use Get to retrieve the messages of a specific interactions and use post to add a new interaction
+class InteractionListCreateView(generics.ListCreateAPIView):
+    serializer_class = InteractionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        chat_session_id = self.request.query_params.get('chat_session')
+        return Interaction.objects.filter(chat_session__id=chat_session_id, chat_session__user=self.request.user)
+
+    def perform_create(self, serializer):
+        chat_session = ChatSession.objects.get(id=self.request.data['chat_session'])
+        if chat_session.user != self.request.user:
+            raise PermissionDenied("You are not allowed to add interactions to this session.")
+        serializer.save(chat_session=chat_session)

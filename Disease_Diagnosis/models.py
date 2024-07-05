@@ -51,9 +51,19 @@ class UserInfo(models.Model): # accessed by user and admin
     
 
     
-class HistoryRecord(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chat = models.CharField(max_length=2000)
-     
-#class DocSpecialty(models.Model):
-    
+class ChatSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chat_sessions')
+    title = models.CharField(max_length=255)
+    started_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Session {self.id} for {self.user.username} - {self.title}"
+
+class Interaction(models.Model):
+    chat_session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='interactions')
+    user_question = models.TextField()
+    model_answer = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Interaction in session {self.chat_session.id} at {self.timestamp}"

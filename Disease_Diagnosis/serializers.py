@@ -5,6 +5,9 @@ from . import models
 from djoser.serializers import ActivationSerializer
 from django.contrib.auth import get_user_model
 
+from .models import ChatSession, Interaction
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -32,13 +35,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             cat = "Obese"
         return cat
         
-class HistoryRecordSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(source='user', read_only=True)
-    chat_log = serializers.CharField(source='chat', read_only=True)
-    class Meta:
-        model = models.HistoryRecord
-        fields = ['id','user_name','chat_log', 'feedback']
-        
+
 class CustomActivationSerializer(ActivationSerializer):
     def activate(self, *args, **kwargs):
         user = super().activate(*args, **kwargs)
@@ -46,3 +43,21 @@ class CustomActivationSerializer(ActivationSerializer):
             user.is_active = True
             user.save()
         return user
+class InteractionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interaction
+        fields = ['id', 'chat_session', 'user_question', 'model_answer', 'timestamp']
+#exclude interactions
+class ChatSessionSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model = ChatSession
+        fields = ['id', 'user', 'title', 'started_at']
+
+ #Retrieve a specific session detail with interactions
+class ChatSessionInteractSerializer(serializers.ModelSerializer):
+    interactions = InteractionSerializer(many=True, read_only=True)
+    user = serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model = ChatSession
+        fields = ['id', 'user', 'title', 'started_at', 'interactions']

@@ -7,10 +7,12 @@ from dotenv import load_dotenv
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from rest_framework import generics
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from Disease_Diagnosis import models
+from Disease_Diagnosis.models import ChatSession, Interaction
 
 # Load environment variables from .env file
 load_dotenv()
@@ -32,11 +34,30 @@ class ProcessChatView(APIView):
             if 'query' not in data or not data['query']:
                 return JsonResponse({'error': 'Query parameter "query" is required and cannot be empty.'}, status=400)
 
+            if 'chat_id' not in data or not data['chat_id']:
+                return JsonResponse({'error': 'Query parameter "chat_id" is required and cannot be empty.'}, status=400)
+            query = data.get('query')
+            chat_id = data.get('chat_id')
+
+            chat_session = ChatSession.objects.get(id=chat_id)
+            if chat_session.user != request.user:#make sure the request user is the same as chat user
+                raise PermissionDenied("You are not allowed to add interactions to this session.")
+
+            #retrieve previous Interactions for context
+            interactions = Interaction.objects.order_by('timestamp')
+            context = ""
+
+            for interaction in interactions:
+                context+= f"<|start_header_id|>user<|end_header_id|>{interaction.user_question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>{interaction.model_answer}<|eot_id|>"
+
+            question = f'{context} <|start_header_id|>user<|end_header_id|>{data["query"]}<|eot_id|><|start_header_id|>assistant<|end_header_id|>'.strip()
+
+
             # URL of Flask api that accepts chat queries
             chat_url = MLModel_server_URL + "/api/process_chat"
             # Date to be sent to Flask server must be in json form
             data = {
-                'query': data.get('query')
+                'query': question
             }
 
             # Headers to authenticate flask server
@@ -51,7 +72,15 @@ class ProcessChatView(APIView):
 
                 # Operation success
                 if response.status_code == 200:
-                    # Handle user History here
+
+                    chat_session = ChatSession.objects.get(id=chat_id)
+                    #Create new interactio
+                    Interaction.objects.create(
+                        chat_session=chat_session,
+                        user_question=query,
+                        model_answer=response_data.get('response')
+                    )
+
                     return HttpResponse(response_data.get('response'))
 
                 else:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserInfo, HistoryRecord
+from .models import UserInfo,Interaction
 
 class UserInfoAdmin(admin.ModelAdmin):
     list_display = ['username', 'age', 'gender', 'weight', 'height']
@@ -9,4 +9,4 @@ class UserInfoAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(UserInfo, UserInfoAdmin)
-admin.site.register(HistoryRecord)
+admin.site.register(Interaction)
