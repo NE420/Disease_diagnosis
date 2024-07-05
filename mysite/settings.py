@@ -129,10 +129,10 @@ SITE_NAME = 'Health&Wellness'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'djangotesteracc678@hotmail.com'
-EMAIL_HOST_PASSWORD = 'AccTesterDjango0123'
+EMAIL_PORT = 587 
+EMAIL_USE_TLS = True 
+EMAIL_HOST_USER = 'newaccfordjang1133@hotmail.com'
+EMAIL_HOST_PASSWORD = 'Cnkabot1t99'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

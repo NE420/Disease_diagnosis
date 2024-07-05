@@ -18,6 +18,7 @@ from django.shortcuts import  get_object_or_404
 from rest_framework.views import APIView
 import requests
 from rest_framework.permissions import AllowAny
+from djoser.serializers import PasswordResetConfirmSerializer
 
 class UserInfoView(generics.RetrieveUpdateAPIView): # single user view accessed by user and admin
     queryset = models.UserInfo.objects.all()
@@ -76,6 +77,13 @@ class UserActivationView(APIView):
             content = {'error': str(e)}
         
         return Response(content)
+    
+class PasswordResetView(APIView):
+    def post(self, request, uid, token):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 #History Views
