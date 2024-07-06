@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views,views_flask
-from .views import ChatSessionListCreateView, ChatSessionDetailView, InteractionListCreateView
+from .views import ChatSessionListCreateView, ChatSessionDetailView
 
 urlpatterns = [
     path('app-users', views.UserInfoView.as_view()),#Used for GET and PUT operations for user info

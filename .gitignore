@@ -26,3 +26,4 @@ temp/
 .idea/
 *.sublime-*
 *.swp
+*.sqlite3

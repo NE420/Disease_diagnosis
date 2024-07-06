@@ -44,7 +44,7 @@ class ProcessChatView(APIView):
                 raise PermissionDenied("You are not allowed to add interactions to this session.")
 
             #retrieve previous Interactions for context
-            interactions = Interaction.objects.order_by('timestamp')
+            interactions = Interaction.objects.filter(chat_session=chat_session).order_by('timestamp')
             context = ""
 
             for interaction in interactions:
@@ -54,7 +54,8 @@ class ProcessChatView(APIView):
 
 
             # URL of Flask api that accepts chat queries
-            chat_url = MLModel_server_URL + "/api/process_chat"
+            #chat_url = MLModel_server_URL + "/api/process_chat"
+            chat_url = "https://00c7-34-87-172-175.ngrok-free.app/"
             # Date to be sent to Flask server must be in json form
             data = {
                 'query': question
@@ -64,7 +65,7 @@ class ProcessChatView(APIView):
             headers = {
                 'MY-API-KEY': MLModel_server_API_Key
             }
-
+            print(question)
             try:
                 # send query and get response
                 response = requests.post(chat_url, json=data, headers=headers)

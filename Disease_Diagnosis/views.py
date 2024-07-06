@@ -117,16 +117,3 @@ class ChatSessionDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return ChatSession.objects.filter(user=self.request.user)
 #Use Get to retrieve the messages of a specific interactions and use post to add a new interaction
-class InteractionListCreateView(generics.ListCreateAPIView):
-    serializer_class = InteractionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        chat_session_id = self.request.query_params.get('chat_session')
-        return Interaction.objects.filter(chat_session__id=chat_session_id, chat_session__user=self.request.user)
-
-    def perform_create(self, serializer):
-        chat_session = ChatSession.objects.get(id=self.request.data['chat_session'])
-        if chat_session.user != self.request.user:
-            raise PermissionDenied("You are not allowed to add interactions to this session.")
-        serializer.save(chat_session=chat_session)
