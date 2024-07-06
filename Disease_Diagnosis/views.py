@@ -1,23 +1,18 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from .permissions import IsOwner
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework import status
+from rest_framework import status, viewsets
 from django.contrib.auth.models import User
 from .serializers import ChatSessionSerializer, InteractionSerializer, ChatSessionInteractSerializer
 from .models import ChatSession, Interaction
 from . import models
 from . import serializers
 from rest_framework.exceptions import PermissionDenied
-
 from django.shortcuts import  get_object_or_404
 #from django.contrib.auth.models import Group, User
-
 from rest_framework.views import APIView
 import requests
-from rest_framework.permissions import AllowAny
 from djoser.serializers import PasswordResetConfirmSerializer
 
 class UserInfoView(generics.RetrieveUpdateAPIView): # single user view accessed by user and admin
@@ -79,12 +74,26 @@ class UserActivationView(APIView):
         return Response(content)
     
 class PasswordResetView(APIView):
-    def post(self, request, uid, token):
-        serializer = PasswordResetConfirmSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    permission_classes = [AllowAny]
 
+    def post(self, request, uid, token):
+        protocol = 'https://' if request.is_secure() else 'http://'
+        web_url = protocol + request.get_host()
+        post_url = f"{web_url}/auth/users/reset_password_confirm/"
+        post_data = {
+            'uid': uid,
+            'token': token,
+            'new_password': request.data.get('new_password')
+        }
+        
+        try:
+            result = requests.post(post_url, json=post_data)
+            result.raise_for_status()  # Raise an error for bad status codes
+            content = result.json()  # Assuming the response is JSON
+        except requests.exceptions.RequestException as e:
+            content = {'error': str(e)}
+        
+        return Response(content)
 
 #History Views
 #With Get Request Retrieves user previous Sessions and with post create a new session
