@@ -55,7 +55,7 @@ class ProcessChatView(APIView):
 
             # URL of Flask api that accepts chat queries
             #chat_url = MLModel_server_URL + "/api/process_chat"
-            chat_url = "https://00c7-34-87-172-175.ngrok-free.app/"
+            chat_url = "https://b76a-34-67-11-26.ngrok-free.app"
             # Date to be sent to Flask server must be in json form
             data = {
                 'query': question
@@ -158,8 +158,8 @@ class ProcessImageView(APIView):
                         'age': age
                     }
                     # URL on Flask server for image processing
-                    image_url = MLModel_server_URL + "/api/process_image"
-
+                    #image_url = MLModel_server_URL + "/api/process_image"
+                    image_url = "https://33bf-41-44-140-48.ngrok-free.app"+"/api/"
                     # Headers with API key for authentication
                     headers = {
                         'MY-API-KEY': MLModel_server_API_Key
