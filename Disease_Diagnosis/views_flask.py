@@ -55,7 +55,7 @@ class ProcessChatView(APIView):
 
             # URL of Flask api that accepts chat queries
             #chat_url = MLModel_server_URL + "/api/process_chat"
-            chat_url = "https://b76a-34-67-11-26.ngrok-free.app"
+            chat_url = "https://ba6b-34-118-195-64.ngrok-free.app"
             # Date to be sent to Flask server must be in json form
             data = {
                 'query': question
